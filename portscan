@@ -1,0 +1,35 @@
+#!/bin/bash
+RED=`tput setaf 1`
+if [ $# != 1 ]
+then
+	echo "${RED}Usage : Portscan <Ip address>
+	scans with nmap -sC and -sV  "
+	exit
+fi
+GREEN=` tput setaf 2`
+WHITE=` tput setaf 7`
+BLUE=`tput setaf 4`
+D=`tput setaf 3`
+
+echo -e "${GREEN}[+] Grabing ports ...${WHITE}"
+
+
+nmap -p- --min-rate 1000 -T4 $1| grep ^[0-9] > abc
+
+
+
+echo "${BLUE}$ports_result$(cat abc)"
+
+
+ports=$(cat abc | cut -d "/" -f 1 | tr "\n" "," | sed s/,$//)    
+rm -rf abc 
+
+echo "${GREEN}[+] Ports Grabbed!"
+
+echo "${BLUE}$ports${GREEN}"
+
+echo "[+] Scanning ...${WHITE}"
+sleep 4
+
+nmap -sC -sV -Pn -p $ports $1 -vvv 
+
